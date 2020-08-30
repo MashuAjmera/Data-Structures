@@ -18,9 +18,11 @@ struct Node
 
 class RBT
 {
+    //root is made private so that functions outside cannot modify it
     Node *root;
 
 protected:
+    // function to right rotate a subtree
     void rightRotate(Node *node)
     {
         Node *temp = node->left;
@@ -38,6 +40,7 @@ protected:
         node->parent = temp;
     }
 
+    // function to left rotate a subtree
     void leftRotate(Node *node)
     {
         Node *temp = node->right;
@@ -55,6 +58,7 @@ protected:
         node->parent = temp;
     }
 
+    // function to interchange colors of 2 nodes
     void swapColors(Node *x, Node *y)
     {
         bool temp = x->color;
@@ -62,6 +66,7 @@ protected:
         y->color = temp;
     }
 
+    // function to check if insertion led to any anomaly
     void checkInsert(Node *node)
     {
         if (node == root)
@@ -111,11 +116,129 @@ protected:
         }
     }
 
+    // funtion to fix the double black condition after deletion
+    void fixDoubleBlack(Node *node)
+    {
+        if (node != root) // case 1
+        {
+            Node *s, *p = node->parent;
+            if (node->parent->left == node)
+                s = p->right;
+            else
+                s = p->left;
+
+            if (s == NULL) // case 2
+                fixDoubleBlack(p);
+            else if (s->color == true) // case 3
+            {
+                p->color = true;
+                s->color = false;
+                if (s == p->left)
+                    rightRotate(p);
+                else
+                    leftRotate(p);
+                fixDoubleBlack(node);
+            }
+            else if (s->left != NULL && s->left->color == true)
+            {
+                if (s == p->left) // case 4: left left
+                {
+                    s->left->color = s->color;
+                    s->color = p->color;
+                    rightRotate(p);
+                }
+                else // case 5: right left
+                {
+                    s->left->color = p->color;
+                    rightRotate(s);
+                    leftRotate(p);
+                }
+            }
+            else if (s->right != NULL && s->right->color == true)
+            {
+                if (s == p->left) // case 4 mirror: left right
+                {
+                    s->right->color = p->color;
+                    leftRotate(s);
+                    rightRotate(p);
+                }
+                else // case 5 mirror: right right
+                {
+                    s->right->color = s->color;
+                    s->color = p->color;
+                    leftRotate(p);
+                }
+            }
+            else // case 6
+            {
+                s->color = true;
+                if (p->color == false)
+                    fixDoubleBlack(p);
+                else
+                    p->color = false;
+            }
+        }
+    }
+
+    // function to delete a node
+    void removeNode(Node *node)
+    {
+        if (node->left != NULL && node->right != NULL) //both left and right child exists
+        {
+            Node *u = node->left;
+            while (u->right != NULL)
+                u = u->right;
+            node->data = u->data;
+            removeNode(u);
+        }
+        else
+        {
+            if (node->left == NULL && node->right == NULL)
+            {
+                if (node == root)
+                    root = NULL;
+                else // node is leaf
+                {
+                    if (node->parent->left == node)
+                        node->parent->left = NULL;
+                    else
+                        node->parent->right = NULL;
+                    if (node->color == false)
+                        fixDoubleBlack(node);
+                }
+            }
+            else
+            {
+                Node *u;
+                if (node->left == NULL)
+                    u = node->right;
+                else
+                    u = node->left;
+                u->parent = node->parent;
+                if (node != root)
+                {
+                    if (node->parent->left == node)
+                        node->parent->left = u;
+                    else
+                        node->parent->right = u;
+                }
+                if (node->color == false && u->color == false)
+                    fixDoubleBlack(u);
+                else
+                    u->color = false;
+            }
+            delete node;
+        }
+    }
+
 public:
+    // constructor function of a new tree
     RBT() { root = NULL; }
 
+    // function to get root pointer
     Node *getRoot() { return root; }
 
+    // function to search a node
     Node *search(int n, Node *node)
     {
         if (node == NULL)
@@ -127,6 +250,7 @@ public:
         return node;
     }
 
+    // function to insert a new node
     int insert(int n)
     {
         Node *node = new Node(n);
@@ -147,10 +271,22 @@ public:
         return 1;
     }
 
-    void remove(int n)
+    // function to identify which node to delete
+    int remove(int n)
     {
+        if (root != NULL)
+        {
+            Node *temp = search(n, root);
+            if (temp->data == n)
+            {
+                removeNode(temp);
+                return 1;
+            }
+        }
+        return -1;
     }
 
+    // function to traverse the tree inorder
     void traverse(Node *node)
     {
         if (node == NULL)
@@ -165,17 +301,6 @@ public:
 int main()
 {
     RBT tree;
-    tree.insert(7);
-    tree.insert(3);
-    tree.insert(18);
-    tree.insert(10);
-    tree.insert(22);
-    tree.insert(8);
-    tree.insert(11);
-    tree.insert(26);
-    tree.insert(2);
-    tree.insert(6);
-    tree.insert(13);
     int i, n;
     cout << "A Red Black Tree has been created.\nYou can do the following operations next-\n1. Insert a new node\n2. Search a node\n3. Delete aa node\n4. Traverse the tree (Inorder)\n5. Delete the tree and exit";
     while (1)
@@ -187,22 +312,28 @@ int main()
         case 1:
             cout << "Enter the number to insert: ";
             cin >> n;
-            tree.insert(n);
-            cout << n << " inserted successfully.";
+            n = tree.insert(n);
+            if (n == 1)
+                cout << n << " inserted successfully.";
+            else
+                cout << n << " already present in tree.";
             break;
         case 2:
-            cout << "Enter the number to search: ");
-            cin >> i;
-            if (tree.search(n, tree.getRoot()) != NULL)
+            cout << "Enter the number to search: ";
+            cin >> n;
+            if (tree.search(n, tree.getRoot()) != NULL && tree.search(n, tree.getRoot())->data == n)
                 cout << "Node found.";
             else
                 cout << "Node not found.";
             break;
         case 3:
             cout << "Enter the number to delete: ";
-            cin >> i;
-            tree.remove(n);
-            cout << "Operation performed.";
+            cin >> n;
+            n = tree.remove(n);
+            if (n == 1)
+                cout << "Node deleted.";
+            else
+                cout << "Node not found.";
             break;
         case 4:
             cout << "Inorder traversal of the tree is: ";
