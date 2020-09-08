@@ -9,7 +9,7 @@ struct Node
     int data[3];
     int count;
 
-    // Function to create a new node
+    // Constructor Function to create a new node
     Node(int key)
     {
         child1 = NULL;
@@ -22,8 +22,10 @@ struct Node
     }
 };
 
+// Utility Function to check if node is leaf
 bool isLeaf(Node *root) { return root->child1 == NULL ? true : false; }
 
+// Function to traverse the tree- inorder
 void inorder(Node *root)
 {
     if (root == NULL)
@@ -37,6 +39,7 @@ void inorder(Node *root)
     inorder(root->child3);
 }
 
+// Function to traverse the tree- preorder
 void preorder(Node *root)
 {
     if (root == NULL)
@@ -50,6 +53,7 @@ void preorder(Node *root)
     preorder(root->child3);
 }
 
+// utility function for search()
 Node *searchNode(Node *root, int key)
 {
     if ((root->count == 1 && key == root->data[0]) || (root->count == 2 && (key == root->data[0] || key == root->data[1])))
@@ -69,6 +73,7 @@ Node *searchNode(Node *root, int key)
         return searchNode(root->child3, key);
 }
 
+// utility function for insert()
 void insertNode(Node *root, int key)
 {
     if (root->count == 1)
@@ -103,6 +108,7 @@ void insertNode(Node *root, int key)
     }
 }
 
+// Function to split a node if number of keys exceed 3
 void split(Node *root, Node *leaf)
 {
     if (leaf == root)
@@ -199,6 +205,7 @@ void split(Node *root, Node *leaf)
     }
 }
 
+// Function to insert a new key in the tree
 void insert(Node *&root, int key)
 {
     if (root == NULL)
@@ -206,7 +213,6 @@ void insert(Node *&root, int key)
         root = new Node(key);
         return;
     }
-
     Node *leaf = searchNode(root, key);
 
     if (leaf == NULL)
@@ -216,6 +222,7 @@ void insert(Node *&root, int key)
         split(root, leaf);
 }
 
+// Function to find a key
 Node *search(Node *root, int key)
 {
     if (root == NULL)
@@ -241,13 +248,15 @@ Node *search(Node *root, int key)
         return search(root->child3, key);
 }
 
-Node *inorderSuccessor(Node *inorderSuccessor)
+// function to find the inorder successor of a key
+Node *inorderSuccessor(Node *node)
 {
-    while (inorderSuccessor->child1 != NULL)
-        inorderSuccessor = inorderSuccessor->child1;
-    return inorderSuccessor;
+    while (node->child1 != NULL)
+        node = node->child1;
+    return node;
 }
 
+// function to change the structure of the tree during deletion
 void rearrange(Node *&root, Node *temp)
 {
     if (temp == root)
@@ -396,25 +405,26 @@ void rearrange(Node *&root, Node *temp)
     }
 }
 
+// Utility Function for remove()
 void removeNode(Node *&root, Node *node, int key)
 {
     if (isLeaf(node) == false)
     {
-        Node *inorderSuccessor;
+        Node *next;
         if (key == node->data[0])
         {
             if (node->child2 != NULL)
-                inorderSuccessor = inorderSuccessor(node->child2);
+                next = inorderSuccessor(node->child2);
             else
-                inorderSuccessor = inorderSuccessor(node->child3);
-            swap(node->data[0], inorderSuccessor->data[0]);
+                next = inorderSuccessor(node->child3);
+            swap(node->data[0], next->data[0]);
         }
         else
         {
-            inorderSuccessor = inorderSuccessor(node->child3);
-            swap(node->data[1], inorderSuccessor->data[0]);
+            next = inorderSuccessor(node->child3);
+            swap(node->data[1], next->data[0]);
         }
-        removeNode(root, inorderSuccessor, key);
+        removeNode(root, next, key);
     }
     else
     {
@@ -429,6 +439,7 @@ void removeNode(Node *&root, Node *node, int key)
     }
 }
 
+// Function to delete a key from the tree
 void remove(Node *&root, int key)
 {
     Node *node = search(root, key);

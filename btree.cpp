@@ -1,6 +1,7 @@
 #include <iostream>
 using namespace std;
 
+// Struct of Node for B Tree
 struct Node
 {
     bool isLeaf;
@@ -8,6 +9,7 @@ struct Node
     Node **children;
     int count;
 
+    // Constructor function to create a new node
     Node(int t, bool leaf)
     {
         count = 0;
@@ -23,6 +25,7 @@ class BTree
     int t;
 
 protected:
+    // Function to split a node if number of keys exceed 2t-1
     void split(int i, Node *parent, Node *node)
     {
         int j;
@@ -45,11 +48,12 @@ protected:
         parent->count += 1;
     }
 
-    void merge(int idx, Node *node)
+    // Function to split a node if number of keys gets less than t-1
+    void merge(int index, Node *node)
     {
-        Node *child = node->children[idx];
-        Node *sibling = node->children[idx + 1];
-        child->keys[t - 1] = node->keys[idx];
+        Node *child = node->children[index];
+        Node *sibling = node->children[index + 1];
+        child->keys[t - 1] = node->keys[index];
 
         for (int i = 0; i < sibling->count; i++)
             child->keys[i + t] = sibling->keys[i];
@@ -60,10 +64,10 @@ protected:
                 child->children[i + t] = sibling->children[i];
         }
 
-        for (int i = idx + 1; i < node->count; i++)
+        for (int i = index + 1; i < node->count; i++)
             node->keys[i - 1] = node->keys[i];
 
-        for (int i = idx + 2; i <= node->count; i++)
+        for (int i = index + 2; i <= node->count; i++)
             node->children[i - 1] = node->children[i];
 
         child->count += sibling->count + 1;
@@ -72,14 +76,17 @@ protected:
     }
 
 public:
+    // Constructor function to create a B-Tree of order t
     BTree(int order)
     {
         root = NULL;
         t = order;
     }
 
+    // function to get root pointer
     Node *getRoot() { return root; }
 
+    // Function to find a key
     Node *search(int key, Node *node)
     {
         int i;
@@ -93,6 +100,7 @@ public:
             return NULL;
     }
 
+    // Function to insert a new key in the tree
     void insert(int key, Node *node)
     {
         if (root == NULL)
@@ -135,62 +143,63 @@ public:
         }
     }
 
+    // Function to delete a key from the tree
     int remove(int key, Node *node)
     {
         if (!root)
             return -1;
 
-        int idx = 0;
-        while (idx < node->count && node->keys[idx] < key)
-            ++idx;
-
-        if (idx < node->count && node->keys[idx] == key)
+        int index = 0;
+        while (index < node->count && node->keys[index] < key)
+            ++index;
+        // if node contains the key
+        if (index < node->count && node->keys[index] == key)
         {
-            if (node->isLeaf)
+            if (node->isLeaf) // if node containing the key is a leaf node
             {
-                for (int i = idx + 1; i < node->count; ++i)
+                for (int i = index + 1; i < node->count; ++i)
                     node->keys[i - 1] = node->keys[i];
                 node->count--;
             }
-            else
+            else // if node containing the key is not a leaf node
             {
-                int k = node->keys[idx];
-                if (node->children[idx]->count >= t)
+                int k = node->keys[index];
+                if (node->children[index]->count >= t) // if left child of key has more than minimum nuber of keys
                 {
-                    Node *cur = node->children[idx];
-                    while (!cur->isLeaf)
-                        cur = cur->children[cur->count];
-                    int pred = cur->keys[cur->count - 1];
-                    node->keys[idx] = pred;
-                    remove(pred, node->children[idx]);
+                    Node *temp = node->children[index];
+                    while (!temp->isLeaf)
+                        temp = temp->children[temp->count];
+                    int pred = temp->keys[temp->count - 1];
+                    node->keys[index] = pred;
+                    remove(pred, node->children[index]);
                 }
-                else if (node->children[idx + 1]->count >= t)
+                else if (node->children[index + 1]->count >= t) // if right child of key has more than minimum nuber of keys
                 {
-                    Node *cur = node->children[idx + 1];
-                    while (!cur->isLeaf)
-                        cur = cur->children[0];
-                    int succ = cur->keys[0];
-                    node->keys[idx] = succ;
-                    remove(succ, node->children[idx + 1]);
+                    Node *temp = node->children[index + 1];
+                    while (!temp->isLeaf)
+                        temp = temp->children[0];
+                    int succ = temp->keys[0];
+                    node->keys[index] = succ;
+                    remove(succ, node->children[index + 1]);
                 }
-                else
+                else // if both children of key donot have more than minimum number of keys, we merge the key with the children
                 {
-                    merge(idx, node);
-                    remove(k, node->children[idx]);
+                    merge(index, node);
+                    remove(k, node->children[index]);
                 }
             }
         }
-        else
+        else // if node doesn't contain the tree
         {
             if (node->isLeaf)
                 return -1;
-            bool flag = ((idx == node->count) ? true : false);
-            if (node->children[idx]->count < t)
+            bool flag = ((index == node->count) ? true : false);
+            if (node->children[index]->count < t)
             {
-                if (idx != 0 && node->children[idx - 1]->count >= t)
+                if (index != 0 && node->children[index - 1]->count >= t)
                 {
-                    Node *child = node->children[idx];
-                    Node *sibling = node->children[idx - 1];
+                    Node *child = node->children[index];
+                    Node *sibling = node->children[index - 1];
 
                     for (int i = child->count - 1; i >= 0; --i)
                         child->keys[i + 1] = child->keys[i];
@@ -199,24 +208,24 @@ public:
                         for (int i = child->count; i >= 0; --i)
                             child->children[i + 1] = child->children[i];
                     }
-                    child->keys[0] = node->keys[idx - 1];
+                    child->keys[0] = node->keys[index - 1];
 
                     if (!child->isLeaf)
                         child->children[0] = sibling->children[sibling->count];
 
-                    node->keys[idx - 1] = sibling->keys[sibling->count - 1];
+                    node->keys[index - 1] = sibling->keys[sibling->count - 1];
                     child->count++;
                     sibling->count--;
                 }
-                else if (idx != node->count && node->children[idx + 1]->count >= t)
+                else if (index != node->count && node->children[index + 1]->count >= t)
                 {
-                    Node *child = node->children[idx];
-                    Node *sibling = node->children[idx + 1];
-                    child->keys[(child->count)] = node->keys[idx];
+                    Node *child = node->children[index];
+                    Node *sibling = node->children[index + 1];
+                    child->keys[(child->count)] = node->keys[index];
                     if (!(child->isLeaf))
                         child->children[(child->count) + 1] = sibling->children[0];
 
-                    node->keys[idx] = sibling->keys[0];
+                    node->keys[index] = sibling->keys[0];
                     for (int i = 1; i < sibling->count; ++i)
                         sibling->keys[i - 1] = sibling->keys[i];
                     if (!sibling->isLeaf)
@@ -227,18 +236,18 @@ public:
                     child->count += 1;
                     sibling->count -= 1;
                 }
-                else if (idx != node->count)
-                    merge(idx, node);
-                else
-                    merge(idx - 1, node);
+                else if (index != node->count) // if index is not the rightmost key
+                    merge(index, node);
+                else // if index is the rightmost key
+                    merge(index - 1, node);
             }
 
-            if (flag && idx > node->count)
-                remove(key, node->children[idx - 1]);
+            if (flag && index > node->count)
+                remove(key, node->children[index - 1]);
             else
-                remove(key, node->children[idx]);
+                remove(key, node->children[index]);
         }
-        if (root->count == 0)
+        if (root->count == 0) // if after deletion root becomes empty
         {
             Node *temp = root;
             if (root->isLeaf)
@@ -250,39 +259,41 @@ public:
         return 1;
     }
 
+    // Function to traverse the tree- inorder
     void inorder(Node *node)
     {
         if (node != NULL)
         {
             int i;
-            cout << "(";
+            cout << " (";
             for (i = 0; i < node->count; i++)
             {
                 if (!node->isLeaf)
                     inorder(node->children[i]);
-                cout << node->keys[i] << " ";
+                cout << " " << node->keys[i];
             }
             if (!node->isLeaf)
                 inorder(node->children[i]);
-            cout << ") ";
+            cout << " )";
         }
     }
 
+    // Function to traverse the tree- preorder
     void preorder(Node *node)
     {
         if (node != NULL)
         {
             int i;
-            cout << "(";
+            cout << " (";
             for (i = 0; i < node->count; i++)
             {
-                cout << node->keys[i] << " ";
+                cout << " " << node->keys[i];
                 if (!node->isLeaf)
                     preorder(node->children[i]);
             }
             if (!node->isLeaf)
                 preorder(node->children[i]);
-            cout << ") ";
+            cout << " )";
         }
     }
 };
@@ -294,29 +305,6 @@ int main()
     cout << "Enter the order of the BTree: ";
     cin >> n;
     BTree tree(n);
-    tree.insert(1, tree.getRoot());
-    tree.insert(3, tree.getRoot());
-    tree.insert(7, tree.getRoot());
-    tree.insert(10, tree.getRoot());
-    tree.insert(11, tree.getRoot());
-    tree.insert(13, tree.getRoot());
-    tree.insert(14, tree.getRoot());
-    tree.insert(15, tree.getRoot());
-    tree.insert(18, tree.getRoot());
-    tree.insert(16, tree.getRoot());
-    tree.insert(19, tree.getRoot());
-    tree.insert(24, tree.getRoot());
-    tree.insert(25, tree.getRoot());
-    tree.insert(26, tree.getRoot());
-    tree.insert(21, tree.getRoot());
-    tree.insert(4, tree.getRoot());
-    tree.insert(5, tree.getRoot());
-    tree.insert(20, tree.getRoot());
-    tree.insert(22, tree.getRoot());
-    tree.insert(2, tree.getRoot());
-    // tree.insert(17, tree.getRoot());
-    // tree.insert(12, tree.getRoot());
-    // tree.insert(6, tree.getRoot());
     cout << "A BTree has been created.\nYou can do the following operations next-\n1. Insert a new node\n2. Search a node\n3. Delete aa node\n4. Traverse the tree (Inorder)\n5. Traverse the tree (Preorder)\n6. Delete the tree and exit";
     while (1)
     {
@@ -339,12 +327,6 @@ int main()
                 cout << "Node not found.";
             break;
         case 3:
-            // tree.remove(6, tree.getRoot());
-            // tree.remove(13, tree.getRoot());
-            // tree.remove(7, tree.getRoot());
-            // tree.remove(4, tree.getRoot());
-            // tree.remove(2, tree.getRoot());
-            // tree.remove(16, tree.getRoot());
             cout << "Enter the number to delete: ";
             cin >> n;
             n = tree.remove(n, tree.getRoot());
