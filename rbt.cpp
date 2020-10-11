@@ -71,7 +71,7 @@ protected:
     {
         if (node == root)
             node->color = false;
-        else if (node->parent->color != false)
+        else if (node->parent->color != false) // parent is red
         {
             Node *p = node->parent; // parent
             Node *g = p->parent;    // grandparent
@@ -82,13 +82,13 @@ protected:
                 u = g->left;
             else
                 u = g->right;
-            if (u != NULL && u->color == true)
+            if (u != NULL && u->color == true) //uncle and parent are red
             {
                 u->color = p->color = false;
-                g->color = true;
+                g->color = true; //make grandparent red
                 checkInsert(g);
             }
-            else
+            else // parent is red, uncle is black
             {
                 if (p == g->left)
                 {
@@ -129,7 +129,7 @@ protected:
 
             if (s == NULL) // case 2
                 fixDoubleBlack(p);
-            else if (s->color == true) // case 3
+            else if (s->color == true) // case 3: sibling is red
             {
                 p->color = true;
                 s->color = false;
@@ -139,7 +139,7 @@ protected:
                     leftRotate(p);
                 fixDoubleBlack(node);
             }
-            else if (s->left != NULL && s->left->color == true)
+            else if (s->left != NULL && s->left->color == true) // sibling is black
             {
                 if (s == p->left) // case 4: left left
                 {
@@ -154,9 +154,9 @@ protected:
                     leftRotate(p);
                 }
             }
-            else if (s->right != NULL && s->right->color == true)
+            else if (s->right != NULL && s->right->color == true) // sibling is black
             {
-                if (s == p->left) // case 4 mirror: left right
+                if (s == p->left) // mirror of case 4: left right
                 {
                     s->right->color = p->color;
                     leftRotate(s);
@@ -169,7 +169,7 @@ protected:
                     leftRotate(p);
                 }
             }
-            else // case 6
+            else // case 6: sibling is black and both its children are black
             {
                 s->color = true;
                 if (p->color == false)
@@ -185,7 +185,7 @@ protected:
     {
         if (node->left != NULL && node->right != NULL) //both left and right child exists
         {
-            Node *u = node->left;
+            Node *u = node->left; // find inorder predecessor
             while (u->right != NULL)
                 u = u->right;
             node->data = u->data;

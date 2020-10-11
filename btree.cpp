@@ -164,7 +164,7 @@ public:
             else // if node containing the key is not a leaf node
             {
                 int k = node->keys[index];
-                if (node->children[index]->count >= t) // if left child of key has more than minimum nuber of keys
+                if (node->children[index]->count >= t) // if left child of key has more than minimum number of keys
                 {
                     Node *temp = node->children[index];
                     while (!temp->isLeaf)
