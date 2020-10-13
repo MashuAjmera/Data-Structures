@@ -1,38 +1,38 @@
 #include <iostream>
-#include <utility>
+#include <utility> // function to delete a key value from the table
 using namespace std;
 
 class Double
 {
-    int m, prime;
-    pair<int, bool> *table;
+    int m, prime;           // m is the size of the hash function, prime is a prime number for the second hash function
+    pair<int, bool> *table; // int reresents the key value, bool is the delete flag
 
 protected:
-    int hash(int k) { return k % m; }
-    int hash2(int k) { return (prime - (k % prime)) % m; }
+    int hash(int k) { return k % m; }                      // this is the first hash function
+    int hash2(int k) { return (prime - (k % prime)) % m; } // this is the second hash function
 
 public:
-    Double(int size, int p)
+    Double(int size, int p) // contructor of the hashmap, takes size of the table and prime number to use in the second hash function as input
     {
         m = size;
         prime = p;
-        table = (pair<int, bool> *)calloc(m, sizeof(pair<int, bool>));
+        table = (pair<int, bool> *)calloc(m, sizeof(pair<int, bool>)); // creates a table of size m
     }
 
-    int search(int k)
+    int search(int k) // function to search a kay value in the table
     {
         for (int i = 0; i < m; i++)
         {
             int pos = (hash(k) + i * hash2(k)) % m;
             if (table[pos].first == k)
-                return pos;
+                return pos; // returns the position of the key value where it is found
             else if (table[pos].first == 0 && table[pos].second == false)
-                return -1;
+                return -1; // returns -1 when not found
         }
         return -1;
     }
 
-    bool insert(int k)
+    bool insert(int k) // function to insert a key value in the table
     {
         for (int i = 0; i < m; i++)
         {
@@ -41,28 +41,27 @@ public:
             {
                 table[pos].first = k;
                 table[pos].second = false;
-                return true;
+                return true; // returns true after insertion
             }
             else if (table[pos].first == k)
-                return false;
+                return false; // returns false when the key is already present
         }
         return false;
     }
 
-    bool remove(int k)
+    bool remove(int k) // function to delete a key value from the table
     {
         int pos = search(k);
         if (pos != -1)
         {
             table[pos].first = 0;
-            table[pos].second = false;
-            return true;
+            table[pos].second = true;
+            return true; // returns false when the key is found and deleted
         }
-        else
-            return false;
+        return false; // returns false when the key is not present
     }
 
-    void traverse()
+    void traverse() // function to print all the values of the table (for ease of use only)
     {
         for (int i = 0; i < m; i++)
             cout << "\n"
@@ -70,6 +69,7 @@ public:
     }
 };
 
+// The driver function
 int main()
 {
     int n, i;
