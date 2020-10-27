@@ -39,7 +39,8 @@ A repository of the various common data structures I have coded in C and C++:
 - [Rabin Karp](https://github.com/MashuAjmera/Data-Structures/blob/master/rabin-karp.cpp)
 - [KMP](https://github.com/MashuAjmera/Data-Structures/blob/master/kmp.cpp)
 - [Boyre Moore](https://github.com/MashuAjmera/Data-Structures/blob/master/boyremoore.cpp)
-- [Suffix Trie]()
+- [Standard Trie for Suffix Matching](https://github.com/MashuAjmera/Data-Structures/blob/master/standardtrie.cpp)
+- [Compressed Trie for Suffix Matching](https://github.com/MashuAjmera/Data-Structures/blob/master/compressedtrie.cpp)
 
 ## Graphs
 

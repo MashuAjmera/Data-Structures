@@ -9,7 +9,6 @@ int *compute_prefix(string P) // function to compute pie values of each P[j]
 
     for (j = 0; j < m; j++) // finding pie[j]
     {
-        // j=2, k=0,i=0
         for (k = j - 1; k >= -1; k--) // checking if P[k] is a suffix of P[j]
         {
             for (i = k; i >= 0; i--) // checking the ith character of P[k]
