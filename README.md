@@ -45,3 +45,10 @@ A repository of the various common data structures I have coded in C and C++:
 ## Graphs
 
 - [Simple Graph](https://github.com/MashuAjmera/Data-Structures/blob/master/graph.c)
+- [Bellman Ford Algorithm](https://github.com/MashuAjmera/Data-Structures/blob/master/bellmanford.cpp)
+- [Dijkstra's Algorithm (Using Adjacency Matrix)](https://github.com/MashuAjmera/Data-Structures/blob/master/dijkstra-matrix.cpp)
+- [Dijkstra's Algorithm (Using Adjacency List)](https://github.com/MashuAjmera/Data-Structures/blob/master/dijkstra-list.cpp)
+- [Bidirectional Dijkstra's Algorithm](https://github.com/MashuAjmera/Data-Structures/blob/master/bi-dijkstra.cpp)
+- [Johnson's Algorithm](https://github.com/MashuAjmera/Data-Structures/blob/master/johnson.cpp)
+- [Edmond Karp Algorithm]() for finding maximum flow in a flow network
+- [Relabel to Front Algorithm]() for finding maximum flow in a flow network
