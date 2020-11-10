@@ -52,4 +52,4 @@ A repository of the various common data structures I have coded in C and C++:
 - [Bidirectional Dijkstra's Algorithm](https://github.com/MashuAjmera/Data-Structures/blob/master/bi-dijkstra.cpp)
 - [Johnson's Algorithm](https://github.com/MashuAjmera/Data-Structures/blob/master/johnson.cpp)
 - [Edmond Karp Algorithm](https://github.com/MashuAjmera/Data-Structures/blob/master/edmondskarp.cpp) to find maximum flow in a flow network
-- [Relabel to Front Algorithm](https://github.com/MashuAjmera/Data-Structures/blob/master/relabel-to-front.cpp) to find maximum flow in a flow network
+- [Relabel to Front Algorithm](https://github.com/MashuAjmera/Data-Structures/blob/master/relabeltofront.cpp) to find maximum flow in a flow network
