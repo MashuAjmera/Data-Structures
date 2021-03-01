@@ -27,6 +27,10 @@ A repository of the various common data structures I have coded in C and C++:
 - [2-3 Tree](https://github.com/MashuAjmera/Data-Structures/blob/master/23tree.cpp)
 - [B Tree](https://github.com/MashuAjmera/Data-Structures/blob/master/btree.cpp)
 
+## Heap
+
+- [Max Heap using Array](https://github.com/MashuAjmera/Data-Structures/blob/master/heap.cpp)
+
 ## Hash Maps
 
 - [Simple Uniform Hashing](https://github.com/MashuAjmera/Data-Structures/blob/master/simple-uniform-hashing.cpp)
@@ -34,7 +38,7 @@ A repository of the various common data structures I have coded in C and C++:
 - [Universal Hashing](https://github.com/MashuAjmera/Data-Structures/blob/master/universal-hashing.cpp)
 - [Perfect Hashing](https://github.com/MashuAjmera/Data-Structures/blob/master/perfect-hashing.cpp)
 
-## Text Pattern Matching
+## Text Pattern Matching (Tries)
 
 - [Rabin Karp](https://github.com/MashuAjmera/Data-Structures/blob/master/rabin-karp.cpp)
 - [KMP](https://github.com/MashuAjmera/Data-Structures/blob/master/kmp.cpp)
