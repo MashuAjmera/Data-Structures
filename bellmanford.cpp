@@ -1,3 +1,12 @@
+/* 
+Problem: Single Source Shortest Path using Bellman Ford
+Tutorial: https://www.youtube.com/watch?v=FtN3BYH2Zes
+Solution Approach: Greedy Method
+Time Complexity: O(n*n)=O(|V-1|*|E|) generally, O(n^3 for complete graph)
+Space Complexity: 
+Author: Mashu Ajmera
+*/
+
 #include <iostream>
 #include <utility> // for pair
 #include <list>    // for list
