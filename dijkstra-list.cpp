@@ -1,4 +1,14 @@
-#include <iostream>
+/* 
+Problem: Single Source Shortest Path using Dijkstra's Algorithm
+Tutorial: https://www.youtube.com/watch?v=FtN3BYH2Zes
+Solution Approach: Greedy Method
+Time Complexity: O(n*n)=O(|V|*|V|)
+Space Complexity: 
+Author: Mashu Ajmera
+Description: Cannot solve for negative edges
+*/
+
+#include <iostream> // standard input output
 #include <utility> // for pair
 #include <list>    // for list
 #include <climits> // for INT_MAX
@@ -19,7 +29,7 @@ public:
     void addEdge(int u, int v, int w)
     {
         edges[u].push_back(make_pair(v, w));
-        edges[v].push_back(make_pair(u, w));
+        edges[v].push_back(make_pair(u, w)); // if undirected graph
     }
 
     void dijkstra(int source)
@@ -41,7 +51,7 @@ public:
             {
                 if (dist[(*it).first].first > (dist[start].first + (*it).second))
                 {
-                    dist[(*it).first].first = dist[start].first + (*it).second; // calculating distances from the element in priority queue
+                    dist[(*it).first].first = dist[start].first + (*it).second; // Relaxation: calculating distances from the element in priority queue
                 }
                 dist[start].second = true; // marking the element as traversed in priority queue
             }
